@@ -1,0 +1,19 @@
+{
+  "name": "@streakify/shared",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "exports": {
+    "./services/*": "./services/*",
+    "./utilities/*": "./utilities/*",
+    "./components/*": "./components/*",
+    "./hooks/*": "./hooks/*",
+    "./ui/*": "./ui/*"
+  }
+}

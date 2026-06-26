@@ -283,7 +283,18 @@ class AuthService {
       await this._checkCrossRole('email', email, role);
 
       const hashedPassword = await bcrypt.hash(password, 12);
-      const uid = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      let uid;
+      
+      try {
+        const userRecord = await auth.createUser({
+          email,
+          password,
+          displayName: displayName || 'User',
+        });
+        uid = userRecord.uid;
+      } catch (authErr) {
+        throw new AppError(authErr.message, 400);
+      }
       
       const userData = {
         uid,

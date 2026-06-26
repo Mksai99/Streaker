@@ -1,0 +1,15 @@
+{
+  "name": "streakify-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=streakify-backend",
+    "dev:customer": "npm run dev --workspace=@streakify/customer-app",
+    "dev:shop": "npm run dev --workspace=@streakify/shop-owner-app",
+    "dev:all": "npx concurrently \"npm run dev:backend\" \"npm run dev:customer\" \"npm run dev:shop\""
+  }
+}

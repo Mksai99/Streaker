@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ displayName: '', email: '', password: '', confirmPassword: '', role: 'customer' });
+  const [form, setForm] = useState({ displayName: '', email: '', password: '', confirmPassword: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -18,10 +18,9 @@ export default function RegisterPage() {
     if (form.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
     setLoading(true);
     try {
-      const data = await register({ displayName: form.displayName, email: form.email, password: form.password, role: form.role });
+      const data = await register({ displayName: form.displayName, email: form.email, password: form.password, role: 'customer' });
       toast.success('Account created successfully!');
-      const paths = { customer: '/customer/dashboard', shopOwner: '/shop/dashboard' };
-      navigate(paths[data.user.role] || '/');
+      navigate('/customer/dashboard');
     } catch (err) {
       toast.error(err.message || 'Registration failed');
     } finally {
@@ -46,17 +45,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="bg-gray-100 dark:bg-gray-900 p-1 rounded-full flex relative">
-            <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-gray-800 rounded-full shadow-sm transition-transform duration-300 ${form.role === 'shopOwner' ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'}`} />
-            <button type="button" onClick={() => set('role', 'customer')}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold z-10 transition-colors ${form.role === 'customer' ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
-              <User className="w-4 h-4" /> Customer
-            </button>
-            <button type="button" onClick={() => set('role', 'shopOwner')}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold z-10 transition-colors ${form.role === 'shopOwner' ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
-              <Store className="w-4 h-4" /> Shop Owner
-            </button>
-          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

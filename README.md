@@ -1,82 +1,106 @@
 # Streakify
 
-Streakify is a dual-portal SaaS platform designed for Customer Loyalty & Streak Management using QR codes. It enables Shop Owners to manage their business, products, galleries, and customer streaks, while Customers can discover shops, track visits, and redeem rewards.
+Streakify is a monorepo for a QR-based loyalty and streak management SaaS. It includes two React frontends (customer and shop owner) and an Express backend integrated with Supabase and Firebase.
 
-## Project Architecture
+## Project Structure
 
-This repository contains three main components:
+```text
+apps/
+  customer-app/      Customer-facing React + Vite application
+  shop-owner-app/    Shop-owner React + Vite application
+backend/             Express API server (Supabase/Firebase/JWT)
+shared/              Shared UI helpers, services, and utilities used across apps
+```
 
-- `frontend/`: The Customer Portal (React, Vite, Tailwind CSS, Radix UI)
-- `frontend-shop/`: The Shop Owner Portal (React, Vite, Tailwind CSS, Radix UI)
-- `backend/`: The API Server (Node.js, Express, Supabase/Firebase)
+## Tech Stack
 
-## Technology Stack
+- **Monorepo:** npm workspaces
+- **Frontend:** React, Vite, Tailwind CSS, Radix UI, Framer Motion
+- **Backend:** Node.js, Express 5
+- **Data/Auth:** Supabase (`@supabase/supabase-js`), Firebase Admin, JWT
+- **Infra:** Docker + docker-compose
 
-- **Frontend**: React.js, Vite, Tailwind CSS, Framer Motion, Radix UI, React Hook Form
-- **Backend**: Node.js, Express.js
-- **Database**: Supabase PostgreSQL (via Supabase JS)
-- **Authentication**: Firebase Authentication / Custom JWT Auth
-- **Storage**: Supabase Storage (Images bucket)
+## Workspace Scripts (run from repo root)
 
-## Getting Started
+```bash
+npm install
 
-### 1. Backend Setup
-1. Navigate to the `backend` directory.
-2. Install dependencies:
-   ```bash
-   cd backend
-   npm install
-   ```
-3. Copy `.env.example` to `.env` (if applicable) and fill in your Supabase and Firebase credentials:
-   - `SUPABASE_URL` and `SUPABASE_KEY`
-   - Firebase Admin credentials
-   - JWT Secrets
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+npm run dev:backend   # Starts backend workspace (streakify-backend)
+npm run dev:customer  # Starts customer app workspace (@streakify/customer-app)
+npm run dev:shop      # Starts shop owner app workspace (@streakify/shop-owner-app)
+npm run dev:all       # Runs backend + both frontends concurrently
+```
 
-### 2. Frontend (Customer App) Setup
-1. Navigate to the `frontend` directory.
-2. Install dependencies:
-   ```bash
-   cd frontend
-   npm install
-   ```
-3. Start the Vite development server:
-   ```bash
-   npm run dev
-   ```
+## App Setup
 
-### 3. Frontend-Shop (Shop Owner App) Setup
-1. Navigate to the `frontend-shop` directory.
-2. Install dependencies:
-   ```bash
-   cd frontend-shop
-   npm install
-   ```
-3. Start the Vite development server:
-   ```bash
-   npm run dev
-   ```
+### Backend
 
-## Key Features
+```bash
+cd backend
+npm install
+cp .env.example .env
+npm run dev
+```
 
-### For Shop Owners
-- **Dashboard & Analytics**: View customer visits, active streaks, and redeemed rewards.
-- **Shop Management**: Update shop details, cover images, logos, and operating hours.
-- **Product Menu**: Add, edit, and organize products and categories with multi-image gallery support.
-- **Gallery**: Upload high-quality promotional images.
-- **QR Scanner**: Scan customer QR codes to register a visit and update streaks.
+Expected env values include Supabase keys/URL, Firebase Admin credentials, and JWT-related secrets.
 
-### For Customers
-- **Shop Discovery**: Browse approved shops and view their products, galleries, and reviews.
-- **Loyalty & Streaks**: Earn streaks by visiting shops and checking in.
-- **Rewards**: Redeem streak-based rewards (Bronze, Silver, Gold, Platinum).
-- **Reviews**: Leave reviews for shops visited.
+### Customer App
 
-## Production Deployment Notes
+```bash
+cd apps/customer-app
+npm install
+cp .env.example .env
+npm run dev
+```
 
-- The backend is configured to use an actual Supabase Database. Ensure `NODE_ENV=production` and `ALLOWED_ORIGINS` are set correctly to secure CORS.
-- All base64 image uploads are processed and stored natively via Supabase Storage in the `images` bucket. Make sure the bucket is created and set to "Public".
-- The frontend applications can be built using `npm run build` or converted to native Android apps using Capacitor (`@capacitor/core`).
+### Shop Owner App
+
+```bash
+cd apps/shop-owner-app
+npm install
+cp .env.example .env
+npm run dev
+```
+
+## Docker
+
+The repository includes:
+
+- `backend/Dockerfile`
+- `apps/customer-app/Dockerfile`
+- `apps/shop-owner-app/Dockerfile`
+- root `docker-compose.yml`
+
+> Note: `docker-compose.yml` currently references a `./frontend` build context for the frontend service, while the repo now uses `apps/customer-app` and `apps/shop-owner-app`. Update compose service paths if you want both current frontend apps containerized via Compose.
+
+## Feature Areas
+
+### Shop Owner Portal
+
+- Dashboard and analytics
+- Shop profile and media management
+- Product/menu management
+- QR-based customer check-in workflows
+
+### Customer Portal
+
+- Shop discovery and viewing
+- Visit streak tracking
+- Reward redemption tiers
+- Reviews and engagement
+
+## Shared Package
+
+The `shared` workspace is published internally as `@streakify/shared` and exports:
+
+- `services/*`
+- `utilities/*`
+- `components/*`
+- `hooks/*`
+- `ui/*`
+
+## Notes
+
+- Root workspace name: `streakify-monorepo`
+- Backend entry point: `backend/src/server.js`
+- Backend helper scripts include `npm run seed` (inside `backend`)
